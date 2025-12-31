@@ -101,7 +101,7 @@ public class Installer {
                         if (dataFile.equals(Config.SECONDARY_HDD_IMAGE_NAME) && outputFile.exists()) {
                             continue;
                         }
-                        if (dataFile.equals(Config.CDROM_IMAGE_NAME) && outputFile.exists()) {
+                        if (dataFile.equals(Config.CDROM_IMAGE_NAME) && outputFile.exists() && outputFile.length() > 0) {
                             continue;
                         }
 
@@ -175,6 +175,8 @@ public class Installer {
                                      final TextView progressPercent) throws IOException {
         Log.i(Config.INSTALLER_LOG_TAG, "downloading runtime data: " + url);
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(30000);
         connection.setRequestProperty("User-Agent", "vmConsole");
         connection.connect();
 
@@ -197,8 +199,15 @@ public class Installer {
             });
         }
 
+        final File parentDir = outputFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            // Ensure the data directory is ready before writing the ISO.
+            parentDir.mkdirs();
+        }
+
+        final File tempFile = File.createTempFile(outputFile.getName(), ".part", parentDir);
         try (InputStream inStream = connection.getInputStream();
-             FileOutputStream outStream = new FileOutputStream(outputFile)) {
+             FileOutputStream outStream = new FileOutputStream(tempFile)) {
             int readBytes;
             long downloaded = 0;
             int lastPercent = 0;
@@ -217,7 +226,30 @@ public class Installer {
                 }
             }
             outStream.flush();
+            if (contentLength > 0 && downloaded != contentLength) {
+                throw new IOException("download aborted: received " + downloaded + " of " + contentLength + " bytes");
+            }
+
+            if (outputFile.exists() && !outputFile.delete()) {
+                throw new IOException("failed to replace existing file: " + outputFile.getAbsolutePath());
+            }
+
+            if (!tempFile.renameTo(outputFile)) {
+                throw new IOException("failed to finalize download to target location");
+            }
+            if (contentLength > 0) {
+                final int percent = 100;
+                activity.runOnUiThread(() -> {
+                    progressBar.setProgress(percent);
+                    progressPercent.setText(percent + "%");
+                });
+            }
         } finally {
+            if (tempFile.exists() && !tempFile.equals(outputFile) && !tempFile.renameTo(outputFile)) {
+                // Clean up incomplete temp files that weren't successfully promoted.
+                //noinspection ResultOfMethodCallIgnored
+                tempFile.delete();
+            }
             connection.disconnect();
         }
     }
