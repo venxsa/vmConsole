@@ -28,7 +28,11 @@ public class Config {
      * Must be a name of file located in assets directory.
      */
     public static final String CDROM_IMAGE_NAME = "debian-11.9.0-amd64-netinst.iso";
+<<<< codex/migrate-application-from-alpine-to-debian-11-03g90m
     public static final String CDROM_IMAGE_URL = "https://cdimage.debian.org/cdimage/archive/11.9.0/amd64/iso-cd/debian-11.9.0-amd64-netinst.iso";
+=======
+    public static final String CDROM_IMAGE_URL = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.9.0-amd64-netinst.iso";
+>>>> main
 
     /**
      * Name of primary HDD image file.
