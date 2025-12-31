@@ -24,7 +24,10 @@ import android.view.WindowManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Runtime data installer for assets embedded into APK.
@@ -86,16 +89,27 @@ public class Installer {
                         if (dataFile.equals(Config.SECONDARY_HDD_IMAGE_NAME) && outputFile.exists()) {
                             continue;
                         }
+                        if (dataFile.equals(Config.CDROM_IMAGE_NAME) && outputFile.exists()) {
+                            continue;
+                        }
 
                         Log.i(Config.INSTALLER_LOG_TAG, "extracting runtime data: " + dataFile);
-                        try (InputStream inStream = assetManager.open(dataFile)) {
-                            try (FileOutputStream outStream = new FileOutputStream(outputFile)) {
-                                int readBytes;
-                                while ((readBytes = inStream.read(buffer)) != -1) {
-                                    outStream.write(buffer, 0, readBytes);
+                        try {
+                            try (InputStream inStream = assetManager.open(dataFile)) {
+                                try (FileOutputStream outStream = new FileOutputStream(outputFile)) {
+                                    int readBytes;
+                                    while ((readBytes = inStream.read(buffer)) != -1) {
+                                        outStream.write(buffer, 0, readBytes);
+                                    }
+                                    outStream.flush();
                                 }
-                                outStream.flush();
                             }
+                        } catch (IOException assetError) {
+                            if (!dataFile.equals(Config.CDROM_IMAGE_NAME)) {
+                                throw assetError;
+                            }
+
+                            downloadFile(Config.CDROM_IMAGE_URL, outputFile, buffer);
                         }
                     }
 
@@ -133,5 +147,28 @@ public class Installer {
                 }
             }
         }.start();
+    }
+
+    private static void downloadFile(final String url, final File outputFile, final byte[] buffer) throws IOException {
+        Log.i(Config.INSTALLER_LOG_TAG, "downloading runtime data: " + url);
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestProperty("User-Agent", "vmConsole");
+        connection.connect();
+
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            connection.disconnect();
+            throw new IOException("failed to download file: HTTP " + connection.getResponseCode());
+        }
+
+        try (InputStream inStream = connection.getInputStream();
+             FileOutputStream outStream = new FileOutputStream(outputFile)) {
+            int readBytes;
+            while ((readBytes = inStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, readBytes);
+            }
+            outStream.flush();
+        } finally {
+            connection.disconnect();
+        }
     }
 }
