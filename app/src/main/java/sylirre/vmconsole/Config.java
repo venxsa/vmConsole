@@ -27,7 +27,8 @@ public class Config {
      * Name of CD-ROM image file.
      * Must be a name of file located in assets directory.
      */
-    public static final String CDROM_IMAGE_NAME = "alpine-x86_64.iso";
+    public static final String CDROM_IMAGE_NAME = "debian-11.9.0-amd64-netinst.iso";
+    public static final String CDROM_IMAGE_URL = "https://cdimage.debian.org/cdimage/archive/11.9.0/amd64/iso-cd/debian-11.9.0-amd64-netinst.iso";
 
     /**
      * Name of primary HDD image file.

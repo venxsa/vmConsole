@@ -1,28 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:padding="20dp">
 
-    <sylirre.vmconsole.termview.TerminalView
-        android:id="@+id/terminal_view"
+    <TextView
+        android:id="@+id/header_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginRight="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_above="@id/extra_keys"
-        android:focusableInTouchMode="true"
-        android:scrollbarThumbVertical="@drawable/terminal_scroll_shape"
-        android:scrollbars="vertical"
-        android:importantForAutofill="no"
-        android:autofillHints="password" />
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/app_brand_title"
+        android:textColor="@color/brandAccentSecondary"
+        android:textSize="22sp"
+        android:letterSpacing="0.05"
+        android:paddingBottom="6dp" />
 
-    <sylirre.vmconsole.ExtraKeysView
-        android:id="@+id/extra_keys"
-        style="?android:attr/buttonBarStyle"
+    <TextView
+        android:id="@+id/header_subtitle"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal" />
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/app_brand_subtitle"
+        android:textColor="@color/mutedText"
+        android:textSize="14sp"
+        android:paddingBottom="14dp" />
+
+    <FrameLayout
+        android:id="@+id/terminal_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/panel_background"
+        android:padding="6dp"
+        android:elevation="4dp">
+
+        <sylirre.vmconsole.termview.TerminalView
+            android:id="@+id/terminal_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:scrollbarThumbVertical="@drawable/terminal_scroll_shape"
+            android:scrollbars="vertical"
+            android:importantForAutofill="no"
+            android:autofillHints="password" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="vertical"
+        android:paddingTop="12dp">
+
+        <sylirre.vmconsole.ExtraKeysView
+            android:id="@+id/extra_keys"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/panel_background"
+            android:padding="4dp"
+            android:orientation="horizontal" />
+    </LinearLayout>
+</LinearLayout>

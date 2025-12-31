@@ -3,7 +3,7 @@
 # vmConsole
 
 vmConsole is an application for [Android OS] that provides a virtual machine
-running [Alpine Linux] distribution. It utilizes [QEMU] x86_64 emulator as
+running [Debian 11] distribution. It utilizes [QEMU] x86_64 emulator as
 its core and does not require device to be rooted or a custom kernel flashed.
 Access to the operating system is performed through a text-based console.
 
@@ -13,7 +13,7 @@ is isolated, which means will not have a direct access to device hardware
 or various file system parts: vmConsole is not usable for automating device
 functionality, exploring hidden [Android OS] paths with root, etc. Neither
 usable as a rooting tool. Root permissions are same virtual as hardware
-on which the [Alpine Linux] is running.
+on which the [Debian 11] is running.
 
 Typical use-cases of vmConsole application:
 
@@ -42,7 +42,7 @@ Optimal device properties for running this app:
 
 * 64-bit CPU
 * 8+ GB of RAM
-* 8+ GB of disk space (if planning on-disk Alpine installation)
+* 8+ GB of disk space (if planning on-disk Debian installation)
 
 [<img src="images/google-play-badge.png" width="256px">](https://play.google.com/store/apps/details?id=sylirre.vmconsole)
 
@@ -53,7 +53,7 @@ about application usage.
 
 |VM property          |Details                                  |
 |:--------------------|:----------------------------------------|
-|OS                   |Alpine Linux, edge branch, diskless mode |
+|OS                   |Debian 11, stable branch, diskless mode  |
 |Accelerator          |QEMU TCG                                 |
 |CPU architecture     |x86_64                                   |
 |CPU type             |max                                      |
@@ -110,10 +110,12 @@ will get too large.
 
 #### Do you plan publishing on F-Droid?
 
-Not for now. The main issues are build systems of Alpine Linux ISO and native
+Not for now. The main issues are build systems of Debian ISO and native
 libraries. Both have heavy dependency on Docker with custom environment.
 
 It is planned to publish APK on GitHub, in addition to Play Store distribution.
+In the meantime, you can download CI-built debug APKs from the **Build APK**
+workflow artifacts on the repository's Actions page.
 
 #### Do you plan localization?
 
@@ -131,24 +133,24 @@ eliminate the emulator layer between host and your program.
 
 vmConsole is not about speed. If speed is your priority, please use [Termux].
 
-#### Why vmConsole is using Alpine Linux as operating system?
+#### Why vmConsole is using Debian 11 as operating system?
 
-Because it is perfectly suitable for use in virtual machines, especially
-emulators.
+Because it is a mature and stable distribution that works well in virtual
+machines, especially emulators.
 
-* Very small comparing to other distributions.
-* Simple by design.
-* No systemd.
+* Large repository with security-supported packages.
+* Predictable release cadence and tooling.
+* Familiar systemd-based userspace matching common server environments.
 
-I don't have any plans to change the Alpine Linux to something else unless
-there would be a good reason for this.
+The project now targets Debian 11 to provide a broader software selection and
+long-term support.
 
 #### Can I run other operating system?
 
 Yes, you can. With a little effort of course. vmConsole provides several
 disks:
 
-* `/dev/cdrom`: read-only ISO image with Alpine Linux.
+* `/dev/cdrom`: read-only ISO image with Debian 11.
 * `/dev/sda`: read-write user disk 1.
 * `/dev/sdb`: read-write user disk 2.
 
@@ -214,14 +216,14 @@ ports.
 
 ## Credits
 
-- [Alpine Linux]: the operating system used in vmConsole.
+- [Debian 11]: the operating system used in vmConsole.
 - [ConnectBot]: the recommended SSH client for use with vmConsole.
 - [QEMU]: the emulator and virtualizer, a core of vmConsole.
 - [Termux]: the famous terminal emulator for Android OS, vmConsole uses certain parts of it.
 
 [author]: https://github.com/sylirre
 [Android OS]: https://www.android.com
-[Alpine Linux]: https://alpinelinux.org
+[Debian 11]: https://www.debian.org/releases/bullseye/
 [ConnectBot]: https://github.com/connectbot/connectbot
 [Limbo PC]: https://github.com/limboemu/limbo
 [QEMU]: https://qemu.org

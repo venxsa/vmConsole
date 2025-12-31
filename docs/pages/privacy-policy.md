@@ -46,11 +46,11 @@ You may want to view [GitHub Privacy Policy](https://docs.github.com/en/site-pol
 
 ## Third party services
 
-vmConsole uses package repository server provided by the [Alpine Linux](https://alpinelinux.org/)
+vmConsole uses package repository servers provided by the [Debian](https://www.debian.org/)
 project for downloading and installing software packages using
-a package manager `apk`. This service as well as the whole Alpine
-Linux project are not affiliated with vmConsole in any way. User
-IP address could be recorded statistics or security purposes
+a package manager `apt`. This service as well as the whole Debian
+project are not affiliated with vmConsole in any way. User
+IP address could be recorded for statistics or security purposes
 whenever a package or metadata archive was downloaded.
 
 vmConsole acts only as environment for installing and running

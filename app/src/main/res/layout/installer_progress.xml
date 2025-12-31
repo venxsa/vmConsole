@@ -2,18 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="20dp">
-
-    <ProgressBar
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/panel_background">
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:gravity="center"
-        android:text="@string/installer_progress_message" />
+        android:id="@+id/progress_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/installer_progress_message"
+        android:textColor="@color/mutedTextStrong"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/progress_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/installer_progress_detail"
+        android:textColor="@color/mutedText"
+        android:textSize="14sp"
+        android:paddingTop="6dp"
+        android:paddingBottom="12dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:indeterminate="true"
+        android:progressTint="@color/brandAccent"
+        android:indeterminateTint="@color/brandAccent" />
+
+    <TextView
+        android:id="@+id/progress_percent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/mutedTextStrong"
+        android:textSize="13sp"
+        android:gravity="end"
+        android:paddingTop="8dp"
+        android:text="" />
 </LinearLayout>

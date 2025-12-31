@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brandNight">#0C1527</color>
+    <color name="brandDeep">#0F284B</color>
+    <color name="brandAccent">#4FA6FF</color>
+    <color name="brandAccentSecondary">#7DD3FF</color>
+    <color name="panelSurface">#18253A</color>
+    <color name="panelStroke">#274062</color>
+    <color name="panelShadow">#221B44</color>
+    <color name="mutedText">#B3C2D8</color>
+    <color name="mutedTextStrong">#E6ECF5</color>
+</resources>

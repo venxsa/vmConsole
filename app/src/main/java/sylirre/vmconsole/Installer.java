@@ -20,11 +20,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.res.AssetManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Runtime data installer for assets embedded into APK.
@@ -63,9 +70,17 @@ public class Installer {
             return;
         }
 
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View progressView = inflater.inflate(R.layout.installer_progress, null);
+        final TextView progressTitle = progressView.findViewById(R.id.progress_title);
+        final TextView progressSubtitle = progressView.findViewById(R.id.progress_subtitle);
+        final TextView progressPercent = progressView.findViewById(R.id.progress_percent);
+        final ProgressBar progressBar = progressView.findViewById(R.id.progress_bar);
+        progressBar.setIndeterminate(true);
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
         dialogBuilder.setCancelable(false);
-        dialogBuilder.setView(R.layout.installer_progress);
+        dialogBuilder.setView(progressView);
 
         final AlertDialog progress = dialogBuilder.create();
         progress.show();
@@ -86,16 +101,36 @@ public class Installer {
                         if (dataFile.equals(Config.SECONDARY_HDD_IMAGE_NAME) && outputFile.exists()) {
                             continue;
                         }
+                        if (dataFile.equals(Config.CDROM_IMAGE_NAME) && outputFile.exists()) {
+                            continue;
+                        }
 
+                        setStatusText(activity, progressTitle, activity.getString(R.string.installer_progress_copying, dataFile));
+                        setStatusText(activity, progressSubtitle, activity.getString(R.string.installer_progress_detail));
+                        activity.runOnUiThread(() -> {
+                            progressBar.setIndeterminate(true);
+                            progressBar.setProgress(0);
+                            progressPercent.setText("");
+                        });
                         Log.i(Config.INSTALLER_LOG_TAG, "extracting runtime data: " + dataFile);
-                        try (InputStream inStream = assetManager.open(dataFile)) {
-                            try (FileOutputStream outStream = new FileOutputStream(outputFile)) {
-                                int readBytes;
-                                while ((readBytes = inStream.read(buffer)) != -1) {
-                                    outStream.write(buffer, 0, readBytes);
+                        try {
+                            try (InputStream inStream = assetManager.open(dataFile)) {
+                                try (FileOutputStream outStream = new FileOutputStream(outputFile)) {
+                                    int readBytes;
+                                    while ((readBytes = inStream.read(buffer)) != -1) {
+                                        outStream.write(buffer, 0, readBytes);
+                                    }
+                                    outStream.flush();
                                 }
-                                outStream.flush();
                             }
+                        } catch (IOException assetError) {
+                            if (!dataFile.equals(Config.CDROM_IMAGE_NAME)) {
+                                throw assetError;
+                            }
+
+                            setStatusText(activity, progressTitle, activity.getString(R.string.installer_progress_downloading));
+                            setStatusText(activity, progressSubtitle, Config.CDROM_IMAGE_URL);
+                            downloadFile(Config.CDROM_IMAGE_URL, outputFile, buffer, activity, progressBar, progressPercent);
                         }
                     }
 
@@ -133,5 +168,61 @@ public class Installer {
                 }
             }
         }.start();
+    }
+
+    private static void downloadFile(final String url, final File outputFile, final byte[] buffer,
+                                     final Activity activity, final ProgressBar progressBar,
+                                     final TextView progressPercent) throws IOException {
+        Log.i(Config.INSTALLER_LOG_TAG, "downloading runtime data: " + url);
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestProperty("User-Agent", "vmConsole");
+        connection.connect();
+
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            connection.disconnect();
+            throw new IOException("failed to download file: HTTP " + connection.getResponseCode());
+        }
+
+        final long contentLength = connection.getContentLengthLong();
+        if (contentLength > 0) {
+            activity.runOnUiThread(() -> {
+                progressBar.setIndeterminate(false);
+                progressBar.setMax(100);
+                progressPercent.setText("0%");
+            });
+        } else {
+            activity.runOnUiThread(() -> {
+                progressBar.setIndeterminate(true);
+                progressPercent.setText("");
+            });
+        }
+
+        try (InputStream inStream = connection.getInputStream();
+             FileOutputStream outStream = new FileOutputStream(outputFile)) {
+            int readBytes;
+            long downloaded = 0;
+            int lastPercent = 0;
+            while ((readBytes = inStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, readBytes);
+                downloaded += readBytes;
+                if (contentLength > 0) {
+                    final int percent = (int) ((downloaded * 100) / contentLength);
+                    if (percent != lastPercent) {
+                        lastPercent = percent;
+                        activity.runOnUiThread(() -> {
+                            progressBar.setProgress(percent);
+                            progressPercent.setText(percent + "%");
+                        });
+                    }
+                }
+            }
+            outStream.flush();
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    private static void setStatusText(final Activity activity, final TextView textView, final String text) {
+        activity.runOnUiThread(() -> textView.setText(text));
     }
 }
