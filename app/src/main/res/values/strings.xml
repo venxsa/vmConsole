@@ -8,17 +8,20 @@
     <string name="ok_label">OK</string>
 
     <!-- Installer dialog -->
-    <string name="installer_progress_message">Initializing…</string>
-    <string name="installer_progress_detail">Setting up Debian 11 runtime files.</string>
-    <string name="installer_progress_downloading">Downloading Debian image…</string>
-    <string name="installer_progress_copying">Copying %1$s…</string>
+    <string name="installer_progress_message">Przygotowanie środowiska</string>
+    <string name="installer_progress_detail">Sprawdzanie obrazów Debiana i plików dysku.</string>
+    <string name="installer_progress_downloading">Pobieranie obrazu Debiana…</string>
+    <string name="installer_progress_copying">Kopiowanie %1$s…</string>
+    <string name="installer_progress_bytes">%1$s / %2$s (%3$d%%)</string>
+    <string name="installer_progress_bytes_unknown">Pobrano %1$s</string>
     <string name="installer_error_title">Initialization failed</string>
     <string name="installer_error_body">Application was unable to set up runtime resources.</string>
     <string name="installer_error_try_again_button">Try again</string>
 
     <!-- Branding -->
     <string name="app_brand_title">vmConsole</string>
-    <string name="app_brand_subtitle">Debian 11 virtual console with Android polish</string>
+    <string name="app_brand_subtitle">Debian 11 netinst w stylu Termux – gładki, ciemny terminal</string>
+    <string name="app_brand_chip">debian 11 · qemu</string>
 
     <!-- Context menu: main -->
     <string name="menu_copy_text">Copy</string>

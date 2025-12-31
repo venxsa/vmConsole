@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brandNight">#0C1527</color>
-    <color name="brandDeep">#0F284B</color>
-    <color name="brandAccent">#4FA6FF</color>
-    <color name="brandAccentSecondary">#7DD3FF</color>
-    <color name="panelSurface">#18253A</color>
-    <color name="panelStroke">#274062</color>
-    <color name="panelShadow">#221B44</color>
-    <color name="mutedText">#B3C2D8</color>
-    <color name="mutedTextStrong">#E6ECF5</color>
+    <color name="brandNight">#080B0F</color>
+    <color name="brandDeep">#0F131A</color>
+    <color name="brandAccent">#6BFF9F</color>
+    <color name="brandAccentSecondary">#B6FFD8</color>
+    <color name="panelSurface">#0D141B</color>
+    <color name="panelStroke">#1E2A34</color>
+    <color name="panelShadow">#0B0F14</color>
+    <color name="mutedText">#9AB8A8</color>
+    <color name="mutedTextStrong">#E0F5E9</color>
 </resources>

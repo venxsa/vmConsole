@@ -190,12 +190,17 @@ public class Installer {
             activity.runOnUiThread(() -> {
                 progressBar.setIndeterminate(false);
                 progressBar.setMax(100);
-                progressPercent.setText("0%");
+                progressPercent.setText(activity.getString(
+                    R.string.installer_progress_bytes,
+                    formatBytes(0),
+                    formatBytes(contentLength),
+                    0
+                ));
             });
         } else {
             activity.runOnUiThread(() -> {
                 progressBar.setIndeterminate(true);
-                progressPercent.setText("");
+                progressPercent.setText(activity.getString(R.string.installer_progress_bytes_unknown, formatBytes(0)));
             });
         }
 
@@ -220,9 +225,18 @@ public class Installer {
                         lastPercent = percent;
                         activity.runOnUiThread(() -> {
                             progressBar.setProgress(percent);
-                            progressPercent.setText(percent + "%");
+                            progressPercent.setText(activity.getString(
+                                R.string.installer_progress_bytes,
+                                formatBytes(downloaded),
+                                formatBytes(contentLength),
+                                percent
+                            ));
                         });
                     }
+                } else {
+                    final String progressText = formatBytes(downloaded);
+                    activity.runOnUiThread(() -> progressPercent.setText(
+                        activity.getString(R.string.installer_progress_bytes_unknown, progressText)));
                 }
             }
             outStream.flush();
@@ -241,7 +255,12 @@ public class Installer {
                 final int percent = 100;
                 activity.runOnUiThread(() -> {
                     progressBar.setProgress(percent);
-                    progressPercent.setText(percent + "%");
+                    progressPercent.setText(activity.getString(
+                        R.string.installer_progress_bytes,
+                        formatBytes(contentLength),
+                        formatBytes(contentLength),
+                        percent
+                    ));
                 });
             }
         } finally {
@@ -256,5 +275,16 @@ public class Installer {
 
     private static void setStatusText(final Activity activity, final TextView textView, final String text) {
         activity.runOnUiThread(() -> textView.setText(text));
+    }
+
+    private static String formatBytes(long bytes) {
+        final String[] units = {"B", "KB", "MB", "GB"};
+        double value = bytes;
+        int unitIndex = 0;
+        while (value >= 1024 && unitIndex < units.length - 1) {
+            value /= 1024;
+            unitIndex++;
+        }
+        return String.format("%.1f %s", value, units[unitIndex]);
     }
 }
