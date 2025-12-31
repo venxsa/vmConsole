@@ -26,6 +26,14 @@ jobs:
         run: |
           sdkmanager "platforms;android-32" "build-tools;32.0.0" "platform-tools"
 
+      - name: Bundle Debian ISO into assets
+        run: |
+          mkdir -p app/src/main/assets
+          ISO_PATH="app/src/main/assets/${CDROM_IMAGE_NAME:-debian-11.9.0-amd64-netinst.iso}"
+          if [ ! -f "$ISO_PATH" ]; then
+            curl -L --fail --progress-bar "https://cdimage.debian.org/cdimage/archive/11.9.0/amd64/iso-cd/debian-11.9.0-amd64-netinst.iso" -o "$ISO_PATH"
+          fi
+
       - name: Build debug APK
         run: ./gradlew --no-daemon assembleDebug
 

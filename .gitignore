@@ -6,7 +6,6 @@
 /.gradle
 *.aab
 *.apk
-*.iso
 *.so
 
 # Local configuration.

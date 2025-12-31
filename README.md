@@ -119,11 +119,12 @@ workflow artifacts on the repository's Actions page.
 
 #### Czy można mieć obraz ISO wbudowany w APK zamiast pobierać go z sieci?
 
-Tak. Z myślą o instalacji offline aplikacja najpierw szuka w pakiecie
-skompresowanego ISO `app/src/main/assets/${CDROM_IMAGE_ARCHIVE_NAME}` i jeżeli
-znajdzie, automatycznie rozpakowuje je przy pierwszym uruchomieniu. Repozytorium
-nie zawiera samego obrazu ze względu na jego rozmiar, ale przed własnym buildem
-możesz dodać archiwum `gzip` z netinst Debian 11.9 pod wskazaną ścieżką.
+Tak. Repozytorium może zawierać pełny obraz `debian-11.9.0-amd64-netinst.iso`
+umieszczony w `app/src/main/assets/`, dzięki czemu APK waży ~200 MB i nie musi
+niczego pobierać przy pierwszym uruchomieniu. Akcje GitHub automatycznie
+ściągają ten sam obraz przed zbudowaniem APK, więc artefakt CI jest gotowy do
+instalacji offline. Jeśli chcesz trzymać ISO w repozytorium, użyj np. Git LFS;
+alternatywnie możesz zostawić katalog pusty, a pipeline sam dociągnie obraz.
 
 #### Do you plan localization?
 

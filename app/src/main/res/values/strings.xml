@@ -22,7 +22,6 @@
 
     <!-- Branding -->
     <string name="app_brand_title">vmConsole</string>
-    <string name="app_brand_subtitle">Debian 11 netinst w stylu Termux – gładki, ciemny terminal</string>
     <string name="app_brand_chip">debian 11 · qemu</string>
 
     <!-- Context menu: main -->
