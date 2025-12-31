@@ -223,11 +223,12 @@ public class Installer {
                     final int percent = (int) ((downloaded * 100) / contentLength);
                     if (percent != lastPercent) {
                         lastPercent = percent;
+                        final long downloadedSnapshot = downloaded;
                         activity.runOnUiThread(() -> {
                             progressBar.setProgress(percent);
                             progressPercent.setText(activity.getString(
                                 R.string.installer_progress_bytes,
-                                formatBytes(downloaded),
+                                formatBytes(downloadedSnapshot),
                                 formatBytes(contentLength),
                                 percent
                             ));
@@ -253,11 +254,12 @@ public class Installer {
             }
             if (contentLength > 0) {
                 final int percent = 100;
+                final long downloadedSnapshot = downloaded;
                 activity.runOnUiThread(() -> {
                     progressBar.setProgress(percent);
                     progressPercent.setText(activity.getString(
                         R.string.installer_progress_bytes,
-                        formatBytes(contentLength),
+                        formatBytes(downloadedSnapshot),
                         formatBytes(contentLength),
                         percent
                     ));
