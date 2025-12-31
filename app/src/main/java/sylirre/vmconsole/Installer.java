@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Runtime data installer for assets embedded into APK.
@@ -128,6 +129,12 @@ public class Installer {
                                 throw assetError;
                             }
 
+                            // Try a bundled compressed ISO first to keep offline installs possible without
+                            // inflating the APK with the raw image.
+                            if (copyBundledIsoArchive(assetManager, outputFile, buffer, activity, progressBar, progressPercent, progressTitle, progressSubtitle)) {
+                                continue;
+                            }
+
                             setStatusText(activity, progressTitle, activity.getString(R.string.installer_progress_downloading));
                             setStatusText(activity, progressSubtitle, Config.CDROM_IMAGE_URL);
                             downloadFile(Config.CDROM_IMAGE_URL, outputFile, buffer, activity, progressBar, progressPercent);
@@ -168,6 +175,43 @@ public class Installer {
                 }
             }
         }.start();
+    }
+
+    private static boolean copyBundledIsoArchive(final AssetManager assetManager, final File outputFile, final byte[] buffer,
+                                                 final Activity activity, final ProgressBar progressBar,
+                                                 final TextView progressPercent, final TextView progressTitle,
+                                                 final TextView progressSubtitle) {
+        try {
+            setStatusText(activity, progressTitle, activity.getString(R.string.installer_progress_unpacking));
+            setStatusText(activity, progressSubtitle, activity.getString(R.string.installer_progress_bundled_iso_detail, Config.CDROM_IMAGE_ARCHIVE_NAME));
+            activity.runOnUiThread(() -> {
+                progressBar.setIndeterminate(true);
+                progressBar.setProgress(0);
+                progressPercent.setText(activity.getString(R.string.installer_progress_bytes_unknown, formatBytes(0)));
+            });
+
+            try (InputStream assetStream = assetManager.open(Config.CDROM_IMAGE_ARCHIVE_NAME);
+                 GZIPInputStream gzipInput = new GZIPInputStream(assetStream);
+                 FileOutputStream outStream = new FileOutputStream(outputFile)) {
+                int readBytes;
+                long written = 0;
+                while ((readBytes = gzipInput.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, readBytes);
+                    written += readBytes;
+                    final long writtenSnapshot = written;
+                    activity.runOnUiThread(() -> progressPercent.setText(
+                        activity.getString(R.string.installer_progress_bytes_unknown, formatBytes(writtenSnapshot))));
+                }
+                outStream.flush();
+            }
+            return true;
+        } catch (IOException bundledError) {
+            Log.w(Config.INSTALLER_LOG_TAG, "bundled ISO archive not present", bundledError);
+            if (outputFile.exists() && !outputFile.delete()) {
+                Log.w(Config.INSTALLER_LOG_TAG, "failed to remove incomplete bundled ISO output");
+            }
+            return false;
+        }
     }
 
     private static void downloadFile(final String url, final File outputFile, final byte[] buffer,

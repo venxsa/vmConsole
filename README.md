@@ -117,6 +117,14 @@ It is planned to publish APK on GitHub, in addition to Play Store distribution.
 In the meantime, you can download CI-built debug APKs from the **Build APK**
 workflow artifacts on the repository's Actions page.
 
+#### Czy można mieć obraz ISO wbudowany w APK zamiast pobierać go z sieci?
+
+Tak. Z myślą o instalacji offline aplikacja najpierw szuka w pakiecie
+skompresowanego ISO `app/src/main/assets/${CDROM_IMAGE_ARCHIVE_NAME}` i jeżeli
+znajdzie, automatycznie rozpakowuje je przy pierwszym uruchomieniu. Repozytorium
+nie zawiera samego obrazu ze względu na jego rozmiar, ale przed własnym buildem
+możesz dodać archiwum `gzip` z netinst Debian 11.9 pod wskazaną ścieżką.
+
 #### Do you plan localization?
 
 Localizing just few labels of UI elements is pointless. The main part, i.e

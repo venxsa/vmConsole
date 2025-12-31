@@ -29,6 +29,7 @@ public class Config {
      */
     public static final String CDROM_IMAGE_NAME = "debian-11.9.0-amd64-netinst.iso";
     public static final String CDROM_IMAGE_URL = "https://cdimage.debian.org/cdimage/archive/11.9.0/amd64/iso-cd/debian-11.9.0-amd64-netinst.iso";
+    public static final String CDROM_IMAGE_ARCHIVE_NAME = "debian-11.9.0-amd64-netinst.iso.gz";
 
     /**
      * Name of primary HDD image file.

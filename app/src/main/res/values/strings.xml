@@ -11,6 +11,8 @@
     <string name="installer_progress_message">Przygotowanie środowiska</string>
     <string name="installer_progress_detail">Sprawdzanie obrazów Debiana i plików dysku.</string>
     <string name="installer_progress_downloading">Pobieranie obrazu Debiana…</string>
+    <string name="installer_progress_unpacking">Rozpakowywanie obrazu wbudowanego…</string>
+    <string name="installer_progress_bundled_iso_detail">Korzystam z wbudowanego archiwum %1$s</string>
     <string name="installer_progress_copying">Kopiowanie %1$s…</string>
     <string name="installer_progress_bytes">%1$s / %2$s (%3$d%%)</string>
     <string name="installer_progress_bytes_unknown">Pobrano %1$s</string>
